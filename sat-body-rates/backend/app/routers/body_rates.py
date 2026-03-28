@@ -34,6 +34,7 @@ async def compute_body_rates(req: BodyRateRequest) -> BodyRateResponse:
             mean_motion_rad_s=n_rad_s,
             attitude_mode=req.attitude_mode.value,
             beta_deg=req.beta_deg,
+            inclination_deg=req.inclination_deg,
         )
 
         # --- Body rates from DCM kinematics ---
