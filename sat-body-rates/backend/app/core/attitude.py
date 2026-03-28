@@ -182,6 +182,9 @@ def _build_nadir_dcms(
     z_body = -r_hat
     x_body = v_hat
     y_body = np.cross(z_body, x_body)  # (N, 3)
+    # Normalise explicitly so the rows remain orthonormal even when r_hat and
+    # v_hat are not exactly perpendicular (e.g. elliptic orbits in future).
+    y_body = y_body / np.linalg.norm(y_body, axis=-1, keepdims=True)
 
     dcm = np.zeros((N, 3, 3))
     dcm[:, 0, :] = x_body
