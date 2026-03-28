@@ -69,6 +69,9 @@ class BodyRateSummary(BaseModel):
     max_abs_r_deg_s: float = Field(
         ..., description="Maximum absolute yaw rate [deg/s]"
     )
+    max_body_rate_deg_s: float = Field(
+        ..., description="Maximum RSS body-rate magnitude [deg/s]"
+    )
     orbital_rate_deg_s: float = Field(
         ..., description="Mean orbital angular rate [deg/s]"
     )
