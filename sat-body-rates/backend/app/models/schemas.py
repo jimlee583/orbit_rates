@@ -23,7 +23,16 @@ class BodyRateRequest(BaseModel):
         ..., gt=0, description="Circular orbit altitude above the Earth's surface [km]"
     )
     inclination_deg: float = Field(
-        ..., ge=0, le=180, description="Orbital inclination [deg]"
+        ...,
+        ge=0,
+        le=180,
+        description=(
+            "Orbital inclination [deg]. "
+            "NOTE: accepted for future use but not currently used in the "
+            "geometry. All attitude profiles are computed in a simplified "
+            "inertial frame with the orbit fixed in the X–Y plane, so results "
+            "are identical for all inclination values."
+        ),
     )
     beta_deg: float = Field(
         ..., ge=-90, le=90, description="Solar beta angle [deg]"

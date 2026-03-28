@@ -42,7 +42,7 @@ This is a **first-pass backend** focused on structure, correctness, and extensib
 |---|---|
 | Circular orbit | Eccentricity = 0; constant altitude throughout the simulation |
 | Two-body dynamics | No J2, atmospheric drag, or third-body perturbations |
-| Orbit in X–Y plane | Simplified inertial frame; inclination is accepted but not used geometrically |
+| Orbit in X–Y plane | Simplified inertial frame; inclination is **accepted but not used** — all geometry is computed as if the orbit lies in the inertial X–Y plane regardless of the supplied value (see note below) |
 | No control / actuators | Pure kinematic profiles — no reaction wheels, thrusters, or control loops |
 | DCM-based body rates | p, q, r extracted from DCM kinematics via antisymmetric finite differencing |
 | Euler angles = display only | 3-2-1 (ZYX) body-from-LVLH deviations; zero for nadir mode |
@@ -51,7 +51,9 @@ This is a **first-pass backend** focused on structure, correctness, and extensib
 | Sun-nadir mode | z_body = nadir; x_body aligned with Sun projection onto the nadir-perpendicular plane; Sun direction fixed in inertial space |
 | Fixed Sun direction | ŝ = [cos β, 0, sin β] in the inertial frame; adequate for simulations up to a few orbits |
 
-All simplifications are clearly marked in the source code with comments indicating where high-fidelity math should be inserted.
+> **Note on `inclination_deg`:** This field is validated and stored but **does not affect any computed quantity** in the current implementation. The attitude geometry is always evaluated in a simplified inertial frame whose X–Y plane coincides with the orbit plane, so the results for inclination = 0°, 28.5°, 51.6°, 97.6°, or any other value are numerically identical. The backend emits a `UserWarning` at runtime whenever a non-zero inclination is supplied as a reminder of this limitation. True inclined-orbit geometry (rotating the orbit plane in ECI, correctly orienting the LVLH frame, and propagating the Sun vector relative to the actual orbital plane) is listed as a future extension.
+
+All other simplifications are clearly marked in the source code with comments indicating where high-fidelity math should be inserted.
 
 ### Coordinate-Frame Conventions
 

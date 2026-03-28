@@ -52,7 +52,10 @@ MVP simplifications
 * Circular orbit only (r̂ ⊥ v̂, constant speed).
 * Orbit in the inertial X–Y plane; orbit normal = Z_I.
 * Sun direction fixed in inertial space.
-* ``inclination_deg`` is accepted but not used in the geometry.
+* ``inclination_deg`` is accepted but not used in the geometry.  A
+  ``UserWarning`` is raised whenever a non-zero value is supplied so that
+  callers are not silently misled into thinking inclined-orbit geometry is
+  being computed.
 """
 
 import warnings
@@ -84,6 +87,7 @@ def generate_attitude_dcms(
     mean_motion_rad_s: float,
     attitude_mode: str,
     beta_deg: float,
+    inclination_deg: float = 0.0,
 ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Construct body-from-inertial DCM histories for the requested mode.
 
@@ -97,6 +101,11 @@ def generate_attitude_dcms(
         One of ``"nadir"``, ``"velocity"``, ``"sun_nadir"``.
     beta_deg :
         Solar beta angle [deg].  Only used by the ``sun_nadir`` mode.
+    inclination_deg :
+        Orbital inclination [deg].  **Not used in the current geometry.**
+        The orbit is always computed in the simplified inertial X–Y plane
+        regardless of this value.  A ``UserWarning`` is raised when a
+        non-zero value is supplied so callers are not silently misled.
 
     Returns
     -------
@@ -106,6 +115,17 @@ def generate_attitude_dcms(
         LVLH-from-inertial DCMs at each time step (used downstream for
         Euler-angle extraction relative to LVLH).
     """
+    if inclination_deg != 0.0:
+        warnings.warn(
+            f"inclination_deg={inclination_deg:.4g}° was supplied but is not "
+            "used in the current geometry. The orbit is computed in a "
+            "simplified inertial frame with the orbit fixed in the X–Y plane. "
+            "All attitude profiles and body rates are independent of "
+            "inclination until true inclined-orbit geometry is implemented.",
+            UserWarning,
+            stacklevel=2,
+        )
+
     n = mean_motion_rad_s
     theta = n * time_s  # true anomaly for circular orbit [rad]
 
