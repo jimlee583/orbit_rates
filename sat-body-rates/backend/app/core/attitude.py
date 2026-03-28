@@ -55,6 +55,8 @@ MVP simplifications
 * ``inclination_deg`` is accepted but not used in the geometry.
 """
 
+import warnings
+
 import numpy as np
 from numpy.typing import NDArray
 
@@ -65,8 +67,16 @@ from backend.app.core.frames import (
 )
 
 # Threshold below which the Sun-projection magnitude is considered
-# degenerate and the velocity fallback is used.
-_SUN_PROJECTION_TOL: float = 1e-10
+# degenerate and the velocity fallback is used.  Set to ~0.6° (sin 0.6° ≈
+# 0.01) so that numerically noisy near-singular directions are caught before
+# they produce large DCM discontinuities and spurious rate spikes.
+_SUN_PROJECTION_TOL: float = 1e-2
+
+# Solar beta angle below which a singularity warning is issued.  For
+# |β| < _BETA_WARN_DEG the Sun projection onto the local horizontal plane
+# becomes small near θ ≈ 0 and θ ≈ π, causing x_body to snap between the
+# Sun-projection direction and the velocity fallback within one time step.
+_BETA_WARN_DEG: float = 5.0
 
 
 def generate_attitude_dcms(
@@ -173,9 +183,33 @@ def _build_sun_nadir_dcms(
     the orbit.
 
     When the projection magnitude drops below ``_SUN_PROJECTION_TOL``
-    (i.e. the Sun is nearly at nadir or zenith), the velocity direction
-    is used as a fallback reference.
+    (i.e. the Sun is within ~0.6° of nadir or zenith), the velocity
+    direction is used as a fallback reference.
+
+    Singularity warning
+    -------------------
+    For |beta_deg| < ``_BETA_WARN_DEG`` (5°) the Sun lies nearly in the
+    orbit plane.  With the fixed Sun model ``ŝ = [cos β, 0, sin β]`` the
+    Sun projection magnitude passes through zero near θ = 0 and θ = π,
+    causing x_body to switch abruptly between the Sun-projection direction
+    and the velocity fallback.  This near-discontinuity in the DCM
+    produces large body-rate spikes at those orbital positions.  A
+    ``UserWarning`` is raised when this condition is detected.
     """
+    if abs(beta_deg) < _BETA_WARN_DEG:
+        warnings.warn(
+            f"beta_deg={beta_deg:.2f}° is within {_BETA_WARN_DEG}° of zero. "
+            "With the fixed Sun model the sun_nadir mode has a geometric "
+            "singularity near theta=0 and theta=pi where the Sun projection "
+            "onto the local horizontal plane approaches zero. x_body will "
+            "fall back to the velocity direction at those points, producing "
+            "large body-rate spikes in the output. Consider using a non-zero "
+            "beta angle or interpreting the rates near those positions with "
+            "caution.",
+            UserWarning,
+            stacklevel=3,
+        )
+
     N = len(r_hat)
     beta_rad = np.radians(beta_deg)
     sun_inertial = np.array([np.cos(beta_rad), 0.0, np.sin(beta_rad)])
