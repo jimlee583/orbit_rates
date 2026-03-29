@@ -1,0 +1,201 @@
+/* ── Reset & base ─────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  background: #f5f6f8;
+  color: #1a1a2e;
+  line-height: 1.5;
+}
+
+/* ── App shell ────────────────────────────────────────────────── */
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+.app-header {
+  margin-bottom: 24px;
+}
+
+.app-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+section {
+  margin-top: 32px;
+}
+
+section h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+}
+
+/* ── Input form ───────────────────────────────────────────────── */
+
+.input-form {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #444;
+}
+
+.form-grid input,
+.form-grid select {
+  margin-top: 4px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.form-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.form-actions button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.form-actions button[type="submit"] {
+  background: #2563eb;
+  color: #fff;
+}
+
+.form-actions button[type="submit"]:disabled {
+  background: #93b4f5;
+  cursor: wait;
+}
+
+.form-actions button[type="button"] {
+  background: #e5e7eb;
+  color: #333;
+}
+
+/* ── Status banners ───────────────────────────────────────────── */
+
+.error-banner {
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: #fee2e2;
+  border: 1px solid #f87171;
+  border-radius: 4px;
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+
+.loading {
+  margin-top: 16px;
+  color: #555;
+  font-style: italic;
+}
+
+/* ── Summary cards ────────────────────────────────────────────── */
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 10px;
+}
+
+.summary-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.card-label {
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.card-value {
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.card-unit {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ── Plot ─────────────────────────────────────────────────────── */
+
+.plot-container {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+/* ── JSON viewer ──────────────────────────────────────────────── */
+
+.json-viewer {
+  margin-top: 8px;
+}
+
+.json-toggle {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #555;
+}
+
+.json-pre {
+  margin-top: 8px;
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  max-height: 400px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
